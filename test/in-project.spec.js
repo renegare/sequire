@@ -2,19 +2,7 @@ var proxy = require('proxyquire').noCallThru()
 var test = require('ava')
 var sinon = require('sinon')
 var path = require('path')
-var casual = require('casual')
-
-casual.define('object', function() {
-    return {
-        ['a_' + casual.word]: casual.string,
-        ['b_' + casual.word]: casual.string,
-        ['c_' + casual.word]: casual.string
-    };
-});
-
-casual.define('fs_path', function() {
-    return casual.array_of_words(casual.integer(1, 10)).join(path.sep)
-});
+var casual = require('./util').casual
 
 var expectedMod = casual.object
 var requiredModPath = casual.fs_path
@@ -26,27 +14,27 @@ var projectRoot = path.sep + casual.fs_path
 var callingFilePath = casual.fs_path + '.js'
 var successfulCall = path.dirname(callingFilePath).split(path.sep).length
 
-proxy('./index', {
-    [path.resolve(projectRoot, requiredModPath)]: expectedMod,
-    'callsite': fakeCallSite,
-    'fs': {existsSync: fakeExistsSync}
+proxy('../index', {
+  [path.resolve(projectRoot, requiredModPath)]: expectedMod,
+  'callsite': fakeCallSite,
+  'fs': {existsSync: fakeExistsSync}
 })
 
-var sequire = require('./index')
+var sequire = require('../index')
 
 fakeExistsSync.onCall(successfulCall).returns(true)
 fakeSiteGetFileName.returns(path.resolve(projectRoot, callingFilePath))
 fakeCallSite.returns(['...', {getFileName: fakeSiteGetFileName}, '...'])
 
 test('correct module was required', t => {
-    var mod = sequire(requiredModPath)
-    t.same(mod, expectedMod)
+  var mod = sequire(requiredModPath)
+  t.same(mod, expectedMod)
 })
 
 test('stubs are called', t => {
-    t.same(fakeCallSite.callCount, 1)
-    t.same(fakeSiteGetFileName.callCount, 1)
-    t.same(fakeExistsSync.callCount, successfulCall + 1)
+  t.same(fakeCallSite.callCount, 1)
+  t.same(fakeSiteGetFileName.callCount, 1)
+  t.same(fakeExistsSync.callCount, successfulCall + 1)
 })
 
 test('fs.existsSync stub calls', t => {

@@ -7,15 +7,15 @@ module.exports = function Sequire (mod) {
   var packageFile
   var found = path.dirname(callingFile)
     .split(path.sep)
-    .map(path => !path? '/' : path)
+    .map(path => !path ? '/' : path)
     .some((curr, index, arr) => {
       packageFile = path.resolve(arr.slice(0, arr.length - index).join(path.sep), 'package.json')
       return fs.existsSync(packageFile)
     })
 
-    if(found) {
-      mod = path.resolve(path.dirname(packageFile), mod);
-    }
+  if (found) {
+    mod = path.resolve(path.dirname(packageFile), mod)
+  }
 
-    return require(mod);
+  return require(mod)
 }
