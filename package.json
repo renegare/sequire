@@ -1,0 +1,27 @@
+{
+  "name": "sequire",
+  "version": "0.0.1",
+  "description": "require modules from the root of your application without the ../../{im lost notation}",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava test.spec.js"
+  },
+  "keywords": [
+    "require",
+    "modules",
+    "source"
+  ],
+  "author": "Mudi <mudi@renegare.com>",
+  "license": "MIT",
+  "dependencies": {
+    "callsite": "^1.0.0"
+  },
+  "devDependencies": {
+    "ava": "^0.7.0",
+    "casual": "^1.4.9",
+    "faker": "^3.0.1",
+    "proxyquire": "^1.7.3",
+    "sinon": "^1.17.2",
+    "standard": "^5.4.1"
+  }
+}
