@@ -7,6 +7,10 @@
     "test": "time ava test/*.spec.js",
     "lint": "standard"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/renegare/sequire"
+  },
   "keywords": [
     "require",
     "modules",
