@@ -11,7 +11,8 @@ npm install sequire
 ## Usage
 
 ```
-var mod = require('something/from/nearest/parent/folder/with/package.json');
+var src = require('sequire')
+var mod = src('something/from/nearest/parent/folder/with/package.json');
 ```
 
 ### OR
@@ -19,7 +20,8 @@ var mod = require('something/from/nearest/parent/folder/with/package.json');
 This will return an absolute path to the module (?)
 
 ```
-var mod = require('something/from/nearest/parent/folder/with/package.json', true);
+var src = require('sequire')
+var modAbsolutePath = src('something/from/nearest/parent/folder/with/package.json', true);
 ```
 
 ## Thoughts ...
