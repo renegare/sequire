@@ -2,7 +2,7 @@ var stack = require('callsite')
 var path = require('path')
 var fs = require('fs')
 
-module.exports = function Sequire (mod) {
+module.exports = function Sequire (mod, returnString) {
   var callingFile = stack()[1].getFileName()
   var packageFile
   var found = path.dirname(callingFile)
@@ -17,5 +17,5 @@ module.exports = function Sequire (mod) {
     mod = path.resolve(path.dirname(packageFile), mod)
   }
 
-  return require(mod)
+  return returnString ? mod : require(mod)
 }
