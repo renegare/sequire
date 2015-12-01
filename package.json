@@ -1,6 +1,6 @@
 {
   "name": "sequire",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "require modules from the root of your application without the ../../{im lost notation}",
   "main": "index.js",
   "scripts": {
