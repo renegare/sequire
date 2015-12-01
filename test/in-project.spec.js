@@ -1,34 +1,43 @@
-var proxy = require('proxyquire').noCallThru()
+var proxy = require('proxyquire')
 var test = require('ava')
 var sinon = require('sinon')
 var path = require('path')
 var casual = require('./util').casual
 
-var expectedMod = casual.object
-var requiredModPath = casual.fs_path
-var fakeCallSite = sinon.stub()
-var fakeExistsSync = sinon.stub()
-var fakeSiteGetFileName = sinon.stub()
+var fakeCallSite
+var fakeExistsSync
+var fakeSiteGetFileName
+var expectedMod
+var requiredMod
+var requiredModPath
+var projectRoot
+var callingFilePath
+var successfulCall
 
-var projectRoot = path.sep + casual.fs_path
-var callingFilePath = casual.fs_path + '.js'
-var successfulCall = path.dirname(callingFilePath).split(path.sep).length
+test.beforeEach(t => {
+  expectedMod = casual.object
 
-proxy('../index', {
-  [path.resolve(projectRoot, requiredModPath)]: expectedMod,
-  'callsite': fakeCallSite,
-  'fs': {existsSync: fakeExistsSync}
+  requiredModPath = casual.fs_path
+  projectRoot = path.sep + casual.fs_path
+  callingFilePath = casual.fs_path + '.js'
+  successfulCall = path.dirname(callingFilePath).split(path.sep).length
+
+  fakeCallSite = sinon.stub()
+  fakeExistsSync = sinon.stub()
+  fakeSiteGetFileName = sinon.stub()
+  fakeExistsSync.onCall(successfulCall).returns(true)
+  fakeSiteGetFileName.returns(path.resolve(projectRoot, callingFilePath))
+  fakeCallSite.returns(['...', {getFileName: fakeSiteGetFileName}, '...'])
+
+  requiredMod = proxy.noCallThru()('../index', {
+    [path.resolve(projectRoot, requiredModPath)]: expectedMod,
+    'callsite': fakeCallSite,
+    'fs': {existsSync: fakeExistsSync}
+  })(requiredModPath)
 })
 
-var sequire = require('../index')
-
-fakeExistsSync.onCall(successfulCall).returns(true)
-fakeSiteGetFileName.returns(path.resolve(projectRoot, callingFilePath))
-fakeCallSite.returns(['...', {getFileName: fakeSiteGetFileName}, '...'])
-
 test('correct module was required', t => {
-  var mod = sequire(requiredModPath)
-  t.same(mod, expectedMod)
+  t.same(requiredMod, expectedMod)
 })
 
 test('stubs are called', t => {
